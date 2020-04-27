@@ -4,7 +4,7 @@ puts "Example: \"4*2-(2+2)\" (without the quotes)"
 puts ""
 print "x = "
 
-expression = "   4*23- 2+          2*57-4 / 70         "
+expression = "   4*23- 2+          2*57-4 / 70      +*++8   "
 # expression = gets.chomp
 # if expression.downcase == "exit"
 #     return
@@ -27,7 +27,6 @@ for token in temp_array                 # para cada digito da expressao
     for operator in delimiters
         if token == operator            # compara digito com cada operador
             op_flag = true
-            exp_last_number = false
             break
         end
     end
@@ -39,8 +38,10 @@ for token in temp_array                 # para cada digito da expressao
             expression.push(token)      # recoloca numero na expressao como elemento distinto do anterior
             exp_last_number = true
         end
-    elsif expression.empty?             # se primeiro digito da expressao é um operador, erro
-        p "error"
+    # se primeiro digito da expressao é um operador ou se ambos digito atual e anterior são operadores, erro
+    elsif expression.empty? or !exp_last_number
+        print token
+        p " error"
     else                                # se digito é operador 
         expression.push(token)          # recoloca na expressao como elemento distinto
         exp_last_number = false
