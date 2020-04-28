@@ -1,4 +1,4 @@
-puts "Ruby Calculator"
+puts "\nRuby Calculator"
 puts "Instructions: enter a numeric expression. Input \"exit\" for exit xD"
 puts "Example: \"4*2-(2+2)\" (without the quotes)"
 puts ""
@@ -8,7 +8,7 @@ print "x = "
 # expression = "   4*23- 2+          2*((57-4+))1 / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4))1 / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4)) / 2     +*++8   "
-expression = "   4*23- 2+          2*((57-4)) / 2        "
+expression = "   4*23- 2+          2*((57-4*3)) / 2        "
 # expression = gets.chomp
 # if expression.downcase == "exit"
 #     return
@@ -24,9 +24,10 @@ puts expression
 delimiters = ['+', '-', '*', '/']
 temp_array = expression.split('')   # separa a string por digitos e guarda num array
 expression = Array.new
+parsing_error = false
 last_tk_numbr = false
 last_tk_prths = false
-parsing_error = false
+qtd_prths = [0,0]
 
 for token in temp_array                 # para cada digito da expressao
     op_flag = false
@@ -45,12 +46,14 @@ for token in temp_array                 # para cada digito da expressao
                 break
             end
             expression.push(token)      # recoloca parentesis como elemento individual
+            qtd_prths[0] += 1
         elsif token == ')'                              # se digito atual é fecha parentesis
             if expression.empty? or !last_tk_numbr      # se digito anterior nao for numero,erro
                 parsing_error = true
                 break
             end
             expression.push(token)      # recoloca parentesis como elemento individual
+            qtd_prths[1] += 1
             last_tk_prths = true
 
         elsif last_tk_numbr             # se digito atual é numero
@@ -76,7 +79,9 @@ for token in temp_array                 # para cada digito da expressao
 end
 # p expression
 
-if parsing_error
+if qtd_prths[0] != qtd_prths[1]
+    puts "\nParsing error: different number of parentheses."
+elsif parsing_error
     print "\nParsing error. Unexpected token \'"
     print token
     print "\' after: "
@@ -86,4 +91,84 @@ if parsing_error
         temp_array << temp_token
     end
     puts temp_array
+else
+    for operator in delimiters
+        if expression.last == operator
+            puts "\nParsing error: expression ending with an operator."
+        end
+    end
 end
+
+prths_priority = [-1]
+expression.each_with_index do |token, index|
+    if token == '('
+        prths_priority.insert(0,index)
+    end
+end
+# p prths_priority
+
+temp_expression = Array.new
+for open_prths in prths_priority
+    close_prths = open_prths + 1
+    while close_prths != expression.length and expression[close_prths] != ')'
+        temp_expression.push(expression[close_prths])
+        expression.delete_at(close_prths)
+    end
+    # p temp_expression
+
+    temp_expression.each_with_index do |token, index|
+        # p token
+        case token
+        when '*'
+            result = temp_expression[index-1].to_i * temp_expression[index+1].to_i
+            temp_expression[index-1] = result.to_s
+            temp_expression.delete_at(index+1)
+            temp_expression.delete_at(index)
+            temp_expression.insert(0,'d')
+        when '/'
+            result = temp_expression[index-1].to_i / temp_expression[index+1].to_i
+            temp_expression[index-1] = result.to_s
+            temp_expression.delete_at(index+1)
+            temp_expression.delete_at(index)
+            temp_expression.insert(0,'d')
+        end
+    end
+    while temp_expression[0] == 'd'
+        temp_expression.delete_at(0)
+    end
+    # p temp_expression
+
+    temp_expression.each_with_index do |token, index|
+        case token
+        when '+'
+            result = temp_expression[index-1].to_i + temp_expression[index+1].to_i
+            temp_expression[index-1] = result.to_s
+            temp_expression.delete_at(index+1)
+            temp_expression.delete_at(index)
+            temp_expression.insert(0,'d')
+        when '-'
+            result = temp_expression[index-1].to_i - temp_expression[index+1].to_i
+            temp_expression[index-1] = result.to_s
+            temp_expression.delete_at(index+1)
+            temp_expression.delete_at(index)
+            temp_expression.insert(0,'d')
+        end
+    end
+    while temp_expression[0] == 'd'
+        temp_expression.delete_at(0)
+    end
+
+    close_prths = open_prths + 1
+    if close_prths != expression.length
+        expression[open_prths] = temp_expression[0]
+        expression.delete_at(open_prths+1)
+    else
+        expression[open_prths+1] = temp_expression[0]
+    end
+    # p expression
+
+    temp_expression.clear
+end
+
+print "x = "
+puts expression
