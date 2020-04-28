@@ -2,25 +2,25 @@ puts "\nRuby Calculator"
 puts "Instructions: enter a numeric expression. Input \"exit\" for exit xD"
 puts "Example: \"4*2-(2+2)\" (without the quotes)"
 puts ""
-print "x = "
+print "input = "
 
 # expression = "   4*23- 2+          2*1(1+(57-4))1 / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4+))1 / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4))1 / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4)) / 2     +*++8   "
-expression = "   4*23- 2+          2*((57-4*3)) / 2        "
-# expression = gets.chomp
-# if expression.downcase == "exit"
-#     return
-# end
+# expression = "   4*23- 2+          2*((57-4*3)) / 2        "
+expression = gets.chomp
+if expression.downcase == "exit"
+    return
+end
 
 temp_array = expression.split       # separa a string por espaços e guarda num array
 expression.clear
 for array_slice in temp_array
     expression << array_slice       # une os pedaços na string
 end
-
 puts expression
+
 delimiters = ['+', '-', '*', '/']
 temp_array = expression.split('')   # separa a string por digitos e guarda num array
 expression = Array.new
@@ -28,6 +28,15 @@ parsing_error = false
 last_tk_numbr = false
 last_tk_prths = false
 qtd_prths = [0,0]
+
+if temp_array[0] == '-'
+    temp_array.insert(0,'0')
+end
+temp_array.each_with_index do | value, index |
+    if value == '(' and temp_array[index+1] == '-'
+        temp_array.insert(index+1,'0')
+    end
+end
 
 for token in temp_array                 # para cada digito da expressao
     op_flag = false
@@ -80,7 +89,7 @@ end
 # p expression
 
 if qtd_prths[0] != qtd_prths[1]
-    puts "\nParsing error: different number of parentheses."
+    puts "\nUnknown parsing error."
 elsif parsing_error
     print "\nParsing error. Unexpected token \'"
     print token
@@ -114,7 +123,12 @@ for open_prths in prths_priority
         temp_expression.push(expression[close_prths])
         expression.delete_at(close_prths)
     end
-    # p temp_expression
+    
+    step = String.new
+    for array_slice in temp_expression
+        step << array_slice
+    end
+    puts step
 
     temp_expression.each_with_index do |token, index|
         # p token
@@ -133,10 +147,17 @@ for open_prths in prths_priority
             temp_expression.insert(0,'d')
         end
     end
-    while temp_expression[0] == 'd'
-        temp_expression.delete_at(0)
+
+    if temp_expression[0] == 'd'
+        while temp_expression[0] == 'd'
+            temp_expression.delete_at(0)
+        end
+        step = String.new
+        for array_slice in temp_expression
+            step << array_slice
+        end
+        puts step
     end
-    # p temp_expression
 
     temp_expression.each_with_index do |token, index|
         case token
@@ -154,8 +175,16 @@ for open_prths in prths_priority
             temp_expression.insert(0,'d')
         end
     end
-    while temp_expression[0] == 'd'
-        temp_expression.delete_at(0)
+
+    if temp_expression[0] == 'd'
+        while temp_expression[0] == 'd'
+            temp_expression.delete_at(0)
+        end
+        step = String.new
+        for array_slice in temp_expression
+            step << array_slice
+        end
+        puts step
     end
 
     close_prths = open_prths + 1
@@ -170,5 +199,5 @@ for open_prths in prths_priority
     temp_expression.clear
 end
 
-print "x = "
+print "output = "
 puts expression
