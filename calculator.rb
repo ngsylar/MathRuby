@@ -29,6 +29,7 @@ last_tk_numbr = false
 last_tk_prths = false
 qtd_prths = [0,0]
 
+# correção para sinal negativo no inicio da expressao ou após abre parenteses
 if temp_array[0] == '-'
     temp_array.insert(0,'0')
 end
@@ -88,6 +89,7 @@ for token in temp_array                 # para cada digito da expressao
 end
 # p expression
 
+# analise de erros
 if qtd_prths[0] != qtd_prths[1]
     puts "\nUnknown parsing error."
 elsif parsing_error
@@ -108,6 +110,7 @@ else
     end
 end
 
+# estabelece prioridade de parenteses
 prths_priority = [-1]
 expression.each_with_index do |token, index|
     if token == '('
@@ -148,6 +151,7 @@ for open_prths in prths_priority
         end
     end
 
+    # correção do indice do loop (nao sei como voltar para o elemento anterior enquanto dentro do loop)
     if temp_expression[0] == 'd'
         while temp_expression[0] == 'd'
             temp_expression.delete_at(0)
@@ -176,6 +180,7 @@ for open_prths in prths_priority
         end
     end
 
+    # correção do indice do loop (nao sei como voltar para o elemento anterior enquanto dentro do loop)
     if temp_expression[0] == 'd'
         while temp_expression[0] == 'd'
             temp_expression.delete_at(0)
@@ -201,3 +206,5 @@ end
 
 print "output = "
 puts expression
+
+# ta bom ne...
