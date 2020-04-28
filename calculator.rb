@@ -20,9 +20,9 @@ for array_slice in temp_array
     expression << array_slice       # une os pedaços na string
 end
 
+puts expression
 delimiters = ['+', '-', '*', '/']
 temp_array = expression.split('')   # separa a string por digitos e guarda num array
-# p temp_array
 expression = Array.new
 last_tk_numbr = false
 last_tk_prths = false
@@ -41,15 +41,13 @@ for token in temp_array                 # para cada digito da expressao
     if !op_flag                         # se digito atual nao é operador
         if token == '('                 # se digito atual é abre parentesis
             if last_tk_numbr            # se digito anterior for numero, erro
-                print token
-                p " error"
+                parsing_error = true
                 break
             end
             expression.push(token)      # recoloca parentesis como elemento individual
         elsif token == ')'                              # se digito atual é fecha parentesis
             if expression.empty? or !last_tk_numbr      # se digito anterior nao for numero,erro
-                print token
-                p " error"
+                parsing_error = true
                 break
             end
             expression.push(token)      # recoloca parentesis como elemento individual
@@ -57,8 +55,7 @@ for token in temp_array                 # para cada digito da expressao
 
         elsif last_tk_numbr             # se digito atual é numero
             if last_tk_prths            # se digito anterior é fecha parentesis, erro
-                print token
-                p " error"
+                parsing_error = true
                 break
             end                         # se digito anterior é numero
             expression.last << token    # junta numero atual ao anterior
@@ -69,8 +66,7 @@ for token in temp_array                 # para cada digito da expressao
 
     # se primeiro digito da expressao é um operador ou se ambos digito atual e anterior são operadores, erro
     elsif expression.empty? or !last_tk_numbr
-        print token
-        p " error"
+        parsing_error = true
         break
 
     else                                # se digito atual é operador 
@@ -78,4 +74,16 @@ for token in temp_array                 # para cada digito da expressao
         last_tk_numbr = false
     end
 end
-p expression
+# p expression
+
+if parsing_error
+    print "\nParsing error. Unexpected token \'"
+    print token
+    print "\' after: "
+
+    temp_array = String.new
+    for temp_token in expression
+        temp_array << temp_token
+    end
+    puts temp_array
+end
