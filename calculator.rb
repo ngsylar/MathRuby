@@ -1,3 +1,4 @@
+loop do
 puts "\nRuby Calculator"
 puts "Instructions: enter a numeric expression. Input \"exit\" for exit xD"
 puts "Example: \"4*2-(2+2)\" (without the quotes)"
@@ -10,9 +11,7 @@ print "input = "
 # expression = "   4*23- 2+          2*((57-4)) / 2     +*++8   "
 # expression = "   4*23- 2+          2*((57-4*3)) / 2        "
 expression = gets.chomp
-if expression.downcase == "exit"
-    return
-end
+break if expression.downcase == "exit"
 
 temp_array = expression.split       # separa a string por espaços e guarda num array
 expression.clear
@@ -92,6 +91,7 @@ end
 # analise de erros
 if qtd_prths[0] != qtd_prths[1]
     puts "\nUnknown parsing error."
+    next
 elsif parsing_error
     print "\nParsing error. Unexpected token \'"
     print token
@@ -102,10 +102,13 @@ elsif parsing_error
         temp_array << temp_token
     end
     puts temp_array
+    next
+
 else
     for operator in delimiters
         if expression.last == operator
             puts "\nParsing error: expression ending with an operator."
+            next
         end
     end
 end
@@ -206,5 +209,9 @@ end
 
 print "output = "
 puts expression
+print "Press <enter>"
+gets.chomp
+end
 
+# sim, onde ha comentarios do tipo "correção", entenda como gambiarra mesmo...
 # ta bom ne...
