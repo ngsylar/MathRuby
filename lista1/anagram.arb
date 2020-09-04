@@ -1,12 +1,12 @@
 def combine_anagrams (words)
-    anagrams = []                                       # array com anagramas combinados
-    words.each_with_index do |word, i|                  # para cada palavra
-        combination = [] << word                        # insere palavra atual numa combinação
-        nextwords = words[ (i+1)..(words.size-1) ]      # próximas palavras
-        nextwords.each_with_index do |nextword, j|      # para cada palavra seguinte
-            if word.chars.sort == nextword.chars.sort
-                combination << nextword
-                words.delete_at(j)                      # bug aqui, deletando elementos errados
+    anagrams = []                                                       # array com anagramas combinados
+    words.each_with_index do |word, i|                                  # para cada palavra
+        combination = [] << word                                        # insere palavra atual numa combinação
+        nextwords = words.drop(i+1)                                     # próximas palavras
+        nextwords.each do |nextword|                                    # para cada palavra seguinte
+            if word.downcase.chars.sort == nextword.downcase.chars.sort #se for anagrama
+                combination << nextword                                 # insere anagrama na combinação
+                words.delete(nextword)                                  # pula futuras comparações do anagrama ja inserido
             end
         end 
         anagrams << combination
@@ -14,4 +14,4 @@ def combine_anagrams (words)
     anagrams
 end
 
-p combine_anagrams(['cars', 'for', 'potatoes', 'racs', 'four','scar', 'creams', 'scream']) # => output: [["cars", "racs", "scar"], ["four"], ["for"], ["potatoes"], ["creams", "scream"]]
+p combine_anagrams(['cars', 'for', 'potatoes', 'racs', 'four','scar', 'creams', 'scream']) # => output: [["cars", "racs", "scar"], ["for"], ["potatoes"], ["four"], ["creams", "scream"]]
