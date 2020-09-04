@@ -1,0 +1,8 @@
+def palindrome? (orig_word)
+    word = orig_word.downcase.gsub(/[[:punct:]]/, '').gsub(/[[:space:]]/, '')
+    word == word.reverse
+end
+
+puts palindrome?("A man, a plan, a canal -- Panama") #=> true
+puts palindrome?("Madam, I'm Adam!") # => true
+puts palindrome?("Abracadabra") # => false (nil is also ok)

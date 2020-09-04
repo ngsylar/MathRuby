@@ -1,0 +1,52 @@
+class WrongNumberOfPlayersError < StandardError ; end
+class NoSuchStrategyError < StandardError ; end
+
+class RockPaperScissors
+    WIN_RULES = [['R', 'S'], ['S', 'P'], ['P', 'R']]
+    LOS_RULES = WIN_RULES.map { |event| event.reverse }
+
+    def battle (orig_game)
+        raise WrongNumberOfPlayersError unless orig_game.length == 2
+        game = [ orig_game[0][1].upcase, orig_game[1][1].upcase ]
+        name = [ orig_game[0][0], orig_game[1][0] ]
+
+        if WIN_RULES.include?(game)
+            puts "#{name[0]} beat #{name[1]} since #{game[0]} > #{game[1]}"
+            [ name[0], game[0] ]
+        elsif LOS_RULES.include?(game)
+            puts "#{name[1]} beat #{name[0]} since #{game[1]} > #{game[0]}"
+            [ name[1], game[1] ]
+        else raise NoSuchStrategyError
+        end
+    end
+
+    def tournament (diagram)
+        number_of_players = diagram.flatten.size/2
+        while number_of_players > 2
+            for i in (0..1) do
+                diagram[i] = tournament(diagram[i])        
+            end
+            number_of_players = diagram.flatten.size/2
+        end
+        battle(diagram)
+    end
+end
+
+rps = RockPaperScissors.new
+
+puts 'SINGLE MATCH'
+rps.battle( [ ['Kristen', 'P'], ['Pam', 'S'] ] ) # => returns the list ["Pam", "S"] wins since S>P
+
+puts '', 'TOURNAMENT'
+rps.tournament(
+    [
+        [
+            [ ["Kristen", "P"], ["Dave", "S"] ],
+            [ ["Richard", "R"], ["Michael", "S"] ],
+        ],
+        [
+            [ ["Allen", "S"], ["Omer", "P"] ],
+            [ ["David E.", "R"], ["Richard X.", "P"] ]
+        ]
+    ]
+) # => ["Richard", "R"]
