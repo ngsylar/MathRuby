@@ -1,0 +1,27 @@
+def combine_anagrams (words)
+    anagrams = []                                   # array com anagramas combinados
+    words.each_with_index do |word, i|
+        comb = [] << word                           # insere palavra atual numa combinação
+        nextwords = words[(i+1)..(words.size-1)]    # palavras a serem comparadas a palavra atual
+        nextwords.each_with_index do |nextword, j|
+            if word.size == nextword.size
+                nextword.each_char do |letter|
+                    unless word.include?(letter)
+                        comb << false
+                        break
+                    end
+                end
+                unless comb.last == false
+                    comb << nextword
+                    words.delete_at(j)
+                else
+                    comb.pop
+                end
+            end
+        end 
+        anagrams << comb
+    end
+    anagrams
+end
+
+p combine_anagrams(['cars', 'for', 'potatoes', 'racs', 'four','scar', 'creams', 'scream']) # => output: [["cars", "racs", "scar"], ["four"], ["for"], ["potatoes"], ["creams", "scream"]]
