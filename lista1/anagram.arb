@@ -1,25 +1,15 @@
 def combine_anagrams (words)
-    anagrams = []                                   # array com anagramas combinados
-    words.each_with_index do |word, i|
-        comb = [] << word                           # insere palavra atual numa combinação
-        nextwords = words[(i+1)..(words.size-1)]    # palavras a serem comparadas a palavra atual
-        nextwords.each_with_index do |nextword, j|
-            if word.size == nextword.size
-                nextword.each_char do |letter|
-                    unless word.include?(letter)
-                        comb << false
-                        break
-                    end
-                end
-                unless comb.last == false
-                    comb << nextword
-                    words.delete_at(j)
-                else
-                    comb.pop
-                end
+    anagrams = []                                       # array com anagramas combinados
+    words.each_with_index do |word, i|                  # para cada palavra
+        combination = [] << word                        # insere palavra atual numa combinação
+        nextwords = words[ (i+1)..(words.size-1) ]      # próximas palavras
+        nextwords.each_with_index do |nextword, j|      # para cada palavra seguinte
+            if word.chars.sort == nextword.chars.sort
+                combination << nextword
+                words.delete_at(j)                      # bug aqui, deletando elementos errados
             end
         end 
-        anagrams << comb
+        anagrams << combination
     end
     anagrams
 end
