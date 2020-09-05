@@ -1,5 +1,8 @@
+require 'i18n'
+I18n.available_locales = [:en]
+
 def palindrome? (orig_word)
-    word = orig_word.downcase.gsub(/[[:punct:]]/, '').gsub(/[[:space:]]/, '')
+    word = I18n.transliterate( orig_word.downcase.gsub(/[^[:alnum:]]/, '') )
     word == word.reverse
 end
 
