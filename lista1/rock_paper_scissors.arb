@@ -21,14 +21,11 @@ class RockPaperScissors
     end
 
     def tournament (diagram)
-        number_of_players = diagram.flatten.size/2
-        while number_of_players > 2
-            for i in (0..1) do
-                diagram[i] = tournament(diagram[i])        
-            end
-            number_of_players = diagram.flatten.size/2
+        diagram.each_with_index do |bracket, i|         # para cada subdiagrama
+            break unless diagram.flatten.size/2 > 2     # enquanto numero de jogadores for maior que 2
+            diagram[i] = tournament(bracket)            # entra num subdiagrama mais interno
         end
-        battle(diagram)
+        battle(diagram)                                 # quando há 2 jogadores no subdiagrama, batalha
     end
 end
 
