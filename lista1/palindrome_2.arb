@@ -1,0 +1,13 @@
+require 'i18n'
+I18n.available_locales = [:en]
+
+String.class_eval do
+    def palindrome?
+        word = I18n.transliterate( self.downcase.gsub(/[^[:alnum:]]/, '') )
+        word == word.reverse
+    end
+end
+
+puts "A man, a plan, a canal -- Panama".palindrome? #=> true
+puts "Madam, I'm Adam!".palindrome? # => true
+puts "Abracadabra".palindrome? # => false (nil is also ok)

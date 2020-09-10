@@ -1,0 +1,8 @@
+Enumerable.class_eval do
+    def palindrome?
+        self == self.reverse
+    end
+end
+
+puts [1,2,3,2,1].palindrome? # => true
+puts [1,2,3,4,5].palindrome? # => false
