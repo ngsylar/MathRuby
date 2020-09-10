@@ -1,0 +1,12 @@
+attendance_list = {}
+
+File.open("engsoft.txt", "r:ISO-8859-1:UTF-8") do |f|
+    f.each_line do |fline|
+        line = fline.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
+        attendance_list[line.first.to_s] = line.last.to_s unless line.empty?
+    end
+end
+
+attendance_list.each do |matricula, nome|
+    puts %Q{#{matricula}\t#{nome}}
+end
