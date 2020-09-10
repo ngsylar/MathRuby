@@ -1,10 +1,10 @@
 def combine_anagrams (words)
     anagrams = []                                                       # array com anagramas combinados
     words.each_with_index do |word, i|                                  # para cada palavra
-        combination = [] << word                                        # insere palavra atual numa combinação
+        combination = [word]                                            # insere palavra atual numa combinação
         nextwords = words.drop(i+1)                                     # próximas palavras
         nextwords.each do |nextword|                                    # para cada palavra seguinte
-            if word.downcase.chars.sort == nextword.downcase.chars.sort #se for anagrama
+            if word.downcase.chars.sort == nextword.downcase.chars.sort # se for anagrama
                 combination << nextword                                 # insere anagrama na combinação
                 words.delete(nextword)                                  # pula futuras comparações do anagrama ja inserido
             end

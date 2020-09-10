@@ -21,11 +21,22 @@ class RockPaperScissors
     end
 
     def tournament (diagram)
+        raise WrongNumberOfPlayersError unless validate_n_players(diagram)
         diagram.each_with_index do |bracket, i|         # para cada subdiagrama
-            break unless diagram.flatten.size/2 > 2     # enquanto numero de jogadores for maior que 2
+            break unless number_of_players(diagram) > 2 # enquanto numero de jogadores for maior que 2
             diagram[i] = tournament(bracket)            # entra num subdiagrama mais interno
         end
         battle(diagram)                                 # quando há 2 jogadores no subdiagrama, batalha
+    end
+
+    private
+    def number_of_players (diagram) ; diagram.flatten.size/2 ; end
+    
+    def validate_n_players (diagram)                    # campeonato precisa ter 2^n jogadores
+        n_players = diagram.flatten.size.to_f/2
+        validate = Math.log(n_players, 2)
+        return true if validate == validate.to_i
+        false
     end
 end
 

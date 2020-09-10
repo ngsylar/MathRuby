@@ -1,13 +1,11 @@
 def count_words (orig_text)
-    text = orig_text.downcase.scan(/\w+/)
-    h = Hash.new
+    text = orig_text.downcase.scan(/[[:alnum:]]+/)
+    h = {}
     text.each do |word|
-        if h[word] == nil then h[word] = 1
-        else h[word] += 1
-        end
+        h[word] = text.count(word)
     end
     h
 end
 
-puts count_words("A man, a plan, a canal -- Panama") # => {'a' => 3, 'man' => 1, 'canal' => 1, 'panama' => 1, 'plan' => 1}
-puts count_words("Doo bee doo bee doo") # => {'doo' => 3, 'bee' => 2}
+puts count_words("A man, a plan, a canal -- Panama") # => {'a' => 3, 'man' => 1, 'plan' => 1, 'canal' => 1, 'panama' => 1}
+puts count_words "Doo bee doo bee doo" # => {'doo' => 3, 'bee' => 2}

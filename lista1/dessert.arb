@@ -1,0 +1,40 @@
+class Dessert
+    attr_accessor :name, :calories
+
+    def initialize (name, calories)
+        @name = name
+        @calories = calories
+    end
+
+    def healthy?
+        return true if @calories < 200
+        false
+    end
+
+    def delicious? ; true ; end
+end
+
+class JellyBean < Dessert
+    attr_accessor :name, :calories, :flavor
+
+    def initialize (name, calories, flavor)
+        @name = name
+        @calories = calories
+        @flavor = flavor
+    end
+
+    def delicious?
+        return false if flavor.downcase == "black licorice"
+        true
+    end
+end
+
+pudim = Dessert.new("pudim", 140)
+bolo = Dessert.new("bolo", 220)
+iogurte = JellyBean.new("iogurte", 220, "agua mole em pedra dura")
+jujuba = JellyBean.new("jujuba", 70, "Black Licorice")
+
+print pudim.name, ' ', pudim.healthy?, ' ', pudim.delicious?, "\n"
+print bolo.name, ' ', bolo.healthy?, ' ', bolo.delicious?, "\n"
+print iogurte.name, ' ', iogurte.healthy?, ' ', iogurte.delicious?, "\n"
+print jujuba.name, ' ', jujuba.healthy?, ' ', jujuba.delicious?, "\n"
