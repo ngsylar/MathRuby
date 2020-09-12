@@ -1,0 +1,27 @@
+today_list = []
+
+def read_attendance (list)
+    File.open("engsoft.txt", "r:ISO-8859-1:UTF-8") do |f|
+        f.each_line do |fline|
+            line = fline.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
+            list << line unless line.empty?
+        end
+    end
+end
+
+def print_attendance (list)
+    list.sort_by! { |regnum, name|
+        yield regnum, name
+    }.each do |regnum, name|
+        puts %Q{#{regnum}\t#{name}}
+    end
+end
+
+read_attendance(today_list)
+
+print "Enter the print order (type \'regnum\' or \'name\'): "
+op_mode = gets.chomp
+
+print_attendance today_list do |regnum, name|
+    eval %Q{#{op_mode}}
+end
