@@ -1,27 +1,43 @@
-today_list = []
-
-def read_attendance (list)
-    File.open("engsoft.txt", "r:ISO-8859-1:UTF-8") do |f|
-        f.each_line do |fline|
-            line = fline.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
-            list << line unless line.empty?
+class Attendance
+    def initialize (file_name)
+        @list = []
+        File.open(file_name, "r:ISO-8859-1:UTF-8") do |f|
+            f.each_line do |fline|
+                line = fline.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
+                @list << line unless line.empty?
+            end
+        end
+    end
+    
+    def print_sorted_by (op_mode)
+        sorted_list do |regnum, name|
+            eval %Q{#{op_mode}}
+        end.each do |regnum, name|
+            puts %Q{#{regnum}\t#{name}}
+        end
+    end
+    
+    private
+    def sorted_list
+        @list.sort_by! do |regnum, name|
+            yield regnum, name
         end
     end
 end
 
-def print_attendance (list)
-    list.sort_by! { |regnum, name|
-        yield regnum, name
-    }.each do |regnum, name|
-        puts %Q{#{regnum}\t#{name}}
-    end
+def run_by_input
+    print "Enter the file name ('engsoft.txt'): "
+    attendance_list = Attendance.new(gets.chomp)
+    print "Enter the print order (type \'regnum\' or \'name\'): "
+    attendance_list.print_sorted_by(gets.chomp)
 end
 
-read_attendance(today_list)
-
-print "Enter the print order (type \'regnum\' or \'name\'): "
-op_mode = gets.chomp
-
-print_attendance today_list do |regnum, name|
-    eval %Q{#{op_mode}}
+def run_by_scrip
+    attendance_list = Attendance.new('engsoft.txt')
+    puts "ATTENDANCE LIST SORTED BY NAME"
+    attendance_list.print_sorted_by('name')
+    puts "\nATTENDANCE LIST SORTED BY REGISTRATION NUMBER"
+    attendance_list.print_sorted_by('regnum')
 end
+
+run_by_scrip # change the method for testing with other inputs
