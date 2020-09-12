@@ -10,18 +10,13 @@ class Attendance
     end
     
     def print_sorted_by (op_mode)
-        sorted_list do |regnum, name|
-            eval %Q{#{op_mode}}
-        end.each do |regnum, name|
-            puts %Q{#{regnum}\t#{name}}
-        end
+        sorted_list { |regnum, name| eval "#{op_mode}" }.
+        each { |regnum, name| puts "#{regnum}\t#{name}" }
     end
     
     private
     def sorted_list
-        @list.sort_by! do |regnum, name|
-            yield regnum, name
-        end
+        @list.sort_by! { |regnum, name| yield regnum, name }
     end
 end
 
