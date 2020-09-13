@@ -1,12 +1,26 @@
 class Attendance
     def initialize (file_name)
         @list = []
+        last_student = nil
         File.open(file_name, "r:ISO-8859-1:UTF-8") do |f|
-            f.each_line do |fline|
-                line = fline.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
-                @list << line unless line.empty?
+            f.each_line do |line|
+                student = line.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
+                if last_student == nil
+                    last_student = student unless student.empty?
+                elsif student.empty?
+                    student = line.strip.upcase.scan(/[[:alpha:]][[[:alpha:]]'\s]*/).flatten
+                    last_student.last << ' '+student.first unless student.empty?
+                    unless line.strip.upcase.scan(/-+/).flatten.empty?
+                        @list << last_student
+                        last_student = nil
+                    end
+                else
+                    @list << last_student
+                    last_student = student
+                end
             end
         end
+        @list.each { |student| p student }
     end
     
     def print_sorted_by (op_mode)
@@ -28,11 +42,11 @@ def run_by_input
 end
 
 def run_by_scrip
-    attendance_list = Attendance.new('engsoft.txt')
-    puts "ATTENDANCE LIST SORTED BY NAME"
-    attendance_list.print_sorted_by('name')
-    puts "\nATTENDANCE LIST SORTED BY REGISTRATION NUMBER"
-    attendance_list.print_sorted_by('regnum')
+    attendance_list = Attendance.new('engsoft2.txt')
+    # puts "ATTENDANCE LIST SORTED BY NAME"
+    # attendance_list.print_sorted_by('name')
+    # puts "\nATTENDANCE LIST SORTED BY REGISTRATION NUMBER"
+    # attendance_list.print_sorted_by('regnum')
 end
 
 run_by_scrip # change the method for testing with other inputs
