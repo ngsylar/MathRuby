@@ -1,39 +1,49 @@
+# Essa versão de código engloba o Quizz 1 e 2
+
+# classe que estrutura uma lista de chamada do dia (com base na estrutura do arquivo .txt fornecido pelo professor)
 class Attendance
     def initialize (file_name)
-        @list = []
-        last_student = nil
+        @list = []              # arranjo que guarda a lista de chamada da instancia
+        last_student = nil      # auxilia na definicao da lista, guardando o ultimo estudante lido
+        # encoding para receber nomes com letras acentuadas
         File.open(file_name, "r:ISO-8859-1:UTF-8") do |f|
             f.each_line do |line|
                 student = line.strip.upcase.scan(/(\d{2}\/\d{7})\s*([[[:alpha:]]'\s]*)/).flatten
+                # se o ultimo estudante lido ja foi inserido na lista, o novo ultimo estudante eh o estudante atual lido
                 if last_student == nil
                     last_student = student unless student.empty?
+                # se leitura nao identificou um estudante atual, concatenar a continuacao do nome do estudante na linha anterior ou...
                 elsif student.empty?
                     student = line.strip.upcase.scan(/[[:alpha:]][[[:alpha:]]'\s]*/).flatten
                     last_student.last << ' '+student.first unless student.empty?
+                    # ...procurar pelo indicador de fim de nome do ultimo estudante e inseri-lo na lista
                     unless line.strip.upcase.scan(/-+/).flatten.empty?
                         @list << last_student
                         last_student = nil
                     end
+                # se ultimo estudante lido nao foi inserido na lista, inseri-lo e agora o ultimo estudante eh o estudante atual lido
                 else
                     @list << last_student
                     last_student = student
                 end
             end
         end
-        @list.each { |student| p student }
     end
     
+    # imprime na tela a lista de chamada da instancia ordenada por op_mode
     def print_sorted_by (op_mode)
-        sorted_list { |regnum, name| eval "#{op_mode}" }.
-        each { |regnum, name| puts "#{regnum}\t#{name}" }
+        sorted_list { |regnum, name| eval "#{op_mode}" }.   # passa o bloco com a opcao de ordenacao para o metodo privado sorted_list que realiza a ordenacao dos estudantes na lista
+        each { |regnum, name| puts "#{regnum}\t#{name}" }   # imprime a lista ja ordenada
     end
     
     private
+    # ordena a lista de chamada, chamando um bloco que contem a opcao de ordenacao inserida pelo usuario ou script
     def sorted_list
         @list.sort_by! { |regnum, name| yield regnum, name }
     end
 end
 
+# metodo de entrada e saida por interacao com usuario
 def run_by_input
     print "Enter the file name ('engsoft.txt'): "
     attendance_list = Attendance.new(gets.chomp)
@@ -41,12 +51,13 @@ def run_by_input
     attendance_list.print_sorted_by(gets.chomp)
 end
 
+# metodo de saida com entrada padronizada por script com base na especificacao do trabalho
 def run_by_scrip
-    attendance_list = Attendance.new('engsoft2.txt')
-    # puts "ATTENDANCE LIST SORTED BY NAME"
-    # attendance_list.print_sorted_by('name')
-    # puts "\nATTENDANCE LIST SORTED BY REGISTRATION NUMBER"
-    # attendance_list.print_sorted_by('regnum')
+    attendance_list = Attendance.new('engsoft.txt')
+    puts "ATTENDANCE LIST SORTED BY NAME"
+    attendance_list.print_sorted_by('name')
+    puts "\nATTENDANCE LIST SORTED BY REGISTRATION NUMBER"
+    attendance_list.print_sorted_by('regnum')
 end
 
-run_by_scrip # change the method for testing with other inputs
+run_by_scrip # modifique o metodo para testar outra entrada
