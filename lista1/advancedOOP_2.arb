@@ -11,7 +11,10 @@ class Numeric
     end
 
     def in (currency)
-        eval %Q{self.#{currency}}
+        singular_currency = currency.to_s.gsub(/s$/, '')
+        if @@currencies.has_key?(singular_currency)
+            self / @@currencies[singular_currency]
+        end
     end
 end
 
