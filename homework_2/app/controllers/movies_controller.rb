@@ -1,8 +1,17 @@
 # This file is app/controllers/movies_controller.rb
 class MoviesController < ApplicationController
   def index
-    sort = params[:sort_by] || 'title'
-    @movies = Movie.all.order(sort)
+    @all_ratings = Movie.all_ratings
+
+    session[:sort_by] = params[:sort_by] || session[:sort_by] || 'title'
+    sort_param = session[:sort_by]
+ 
+    session[:ratings] = params[:ratings] || session[:ratings] || @all_ratings.zip([]).to_h
+    @rating_filter = session[:ratings].keys
+    
+    @movies = Movie.where(rating: @rating_filter).order(sort_param)
+
+    @test = [sort_param, @rating_filter]
   end
 
   def show
