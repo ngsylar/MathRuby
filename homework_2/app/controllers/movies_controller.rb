@@ -11,7 +11,7 @@ class MoviesController < ApplicationController
     
     @movies = Movie.where(rating: @rating_filter).order(sort_param)
 
-    @test = [sort_param, @rating_filter]
+    # @test = [sort_param, @rating_filter]
   end
 
   def show
