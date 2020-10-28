@@ -1,4 +1,3 @@
-
 Feature: display list of movies sorted by different criteria
  
   As an avid moviegoer
@@ -21,7 +20,7 @@ Background: movies have been added to database
   | Chicken Run             | G      | 21-Jun-2000  |
 
   And I am on the RottenPotatoes home page
-  And I check all ratings
+  When I check all ratings
   And I press "ratings_submit"
 
 Scenario: sort movies alphabetically
